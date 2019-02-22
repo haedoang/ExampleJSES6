@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<beans xmlns="http://www.springframework.org/schema/beans" 
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:mvc="http://www.springframework.org/schema/mvc"
+       xmlns:aop="http://www.springframework.org/schema/aop"
+       xmlns:task="http://www.springframework.org/schema/task"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xsi:schemaLocation="http://www.springframework.org/schema/aop 
+                           http://www.springframework.org/schema/aop/spring-aop.xsd
+       					   http://www.springframework.org/schema/mvc 
+                           http://www.springframework.org/schema/mvc/spring-mvc.xsd
+       					   http://www.springframework.org/schema/context
+                           http://www.springframework.org/schema/context/spring-context.xsd
+       					   http://www.springframework.org/schema/beans 
+                           http://www.springframework.org/schema/beans/spring-beans.xsd
+                           http://www.springframework.org/schema/task
+                           http://www.springframework.org/schema/task/spring-task.xsd">
+
+    	<context:component-scan base-package="kr.co.haedoang"/>
+
+		<!-- batch!!! -->
+    	<task:annotation-driven />
+		
+     	
+     	<aop:aspectj-autoproxy/>
+       
+    	<mvc:annotation-driven>
+    		<!-- ajax화면출력message 한글처리하기 -->
+    		<mvc:message-converters>
+    			<bean class="org.springframework.http.converter.StringHttpMessageConverter">
+    				<!-- setSupportedMediaTypes 사용 -->
+    				<property name="supportedMediaTypes">
+    					<list>
+    						<value>text/plain;charset=UTF-8</value>
+    						<value>text/html;charset=UTF-8</value>
+    					</list>
+    				</property>
+    			</bean>
+    		</mvc:message-converters>
+    	</mvc:annotation-driven>
+    	
+		<!-- 로그인 세션 필터 처리 -->
+		<!-- <mvc:interceptors>
+			<mvc:interceptor>
+				<mvc:mapping path="/user/*" />
+				<mvc:mapping path="/main/main.do" />
+				<mvc:mapping path="/class/*" /> 
+				<mvc:exclude-mapping path="/user/checkId.do"/>
+				<mvc:exclude-mapping path="/user/signUp.do"/>
+
+				<bean class="kr.co.steach.home.AuthInterceptor" />
+			</mvc:interceptor>
+		</mvc:interceptors> -->
+	
+    	<!-- 아이디가 고정되어야함. 규칙(multipartResolver) -->
+    	<!-- <bean id="multipartResolver" class="org.springframework.web.multipart.commons.CommonsMultipartResolver">
+    		<property name="maxUploadSize" value="104857600"/>100mb ,, 1024*1024*100
+    	</bean> -->
+    	
+<!--     	controller 없이 이동하기 (form 호출 뭐 이런거 ) -->
+<!--     	<mvc:view-controller path="/09interceptor/loginForm.do" -->
+<!--     					     view-name="09interceptor/loginForm"/> -->
+    	
+    	<!-- 
+    		web 자원중에서 스프링을 거치지 않아도 되는 것들: iage,css,javascript
+    		 바로페이지를 반환  참고만하셔~ 
+    	 -->
+    	
+<!--     	<mvc:resources mapping="/resources/**" location="/resources/**" /> -->
+    	
+    	
+    	
+    	<mvc:default-servlet-handler />
+    	
+    	<mvc:view-resolvers>
+    		<mvc:jsp prefix="/WEB-INF/jsp/" suffix=".jsp" />
+    	</mvc:view-resolvers>
+    	
+    	
+</beans>

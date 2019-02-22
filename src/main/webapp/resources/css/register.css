@@ -1,0 +1,62 @@
+@charset "UTF-8";
+
+* {
+	margin: 0;
+	padding: 0;
+}
+
+#registerTable {
+	text-align: center;
+	width: 98%;
+	margin: 10px;
+	padding: 10px;
+	height: 250px;
+	border: 1px solid black;
+	border-collapse: collapse;
+}
+
+th, tr, td {
+	border: 1px solid black;
+}
+
+th {
+	background: grey;
+}
+
+.right, .left {
+	display: inline;
+	width: 49%;
+	height: 50px;
+	float: left;
+	text-align: center;
+}
+
+.left>input {
+	width: 200px;
+	height: 50px;
+}
+
+.right>input {
+	width: 100px;
+	height: 50px;
+}
+
+.resultTable {
+	padding-top: 50px;
+}
+
+.count {
+	margin-top: 80px;
+}
+
+.count-section>div {
+	margin-left: 70%;
+}
+
+input[type="text"], input[type="password"] {
+	min-height: 30px;
+}
+
+input[name="name"] {
+	min-width: 300px;
+}

@@ -1,0 +1,262 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="kr.co.haedoang.db.repository.mapper.StaffMapper">
+	<!-- vo resultMap 가져오기 -->
+	<resultMap id="staffMap" type="Staff">
+		<result column="staff_no" property="staffNo"/>
+		<result column="staff_name" property="staffName"/>
+		<result column="jumin_no" property="juminNo"/>
+		<result column="school_code" property="schoolCode"/>
+		<result column="religion_code" property="religionCode"/>
+		<result column="graduate_day" property="graduateDay"/>
+	</resultMap>
+	
+	<resultMap id="staffSkillMap" type="StaffSkill">
+		<result column="staff_skill_no" property="staffSkillNo"/>
+		<result column="staff_no" property="staffNo"/>
+		<result column="skill_code" property="skillCode"/>
+	</resultMap>
+	
+	<resultMap id="codeSkillMap" type="CodeSkill">
+		<result column="skill_code" property="skillCode"/>
+		<result column="skill_name" property="skillName"/>
+	</resultMap>
+	
+	<resultMap id="codeSchoolMap" type="CodeSchool">
+		<result column="school_code" property="schoolCode"/>
+		<result column="school_name" property="schoolName"/>
+	</resultMap>
+	
+	<resultMap id="codeReligionMap" type="CodeReligion">
+		<result column="religion_code" property="religionCode"/>
+		<result column="religion_name" property="religionName"/>
+	</resultMap>
+
+
+	<!-- page load 시 검색 테이블 DB데이터 가져오기
+		codeReligion,codeSchool,codeSkill.
+	 -->
+	
+	<select id="selectReligion" resultMap="codeReligionMap">
+		select *
+		  from code_religion
+		 order by religion_code asc
+	</select>
+
+	<select id="selectSchool" resultMap="codeSchoolMap">
+		select *
+		  from code_school
+		 order by school_code asc
+	</select>
+	
+	<select id="selectSkill" resultMap="codeSkillMap">
+		select *
+		  from code_skill
+		 order by skill_code asc
+	</select>
+	
+	
+	<!-- 전체 사원정보 -->
+	<select id="selectStaff" parameterType="SearchStaff" resultMap="staffMap">
+		select *
+		  from staff
+		 <where>
+		 	<if test="staffName != ''">
+			 	and staff_name like CONCAT ('%', #{staffName}, '%') 	
+		 	</if>
+		 	<if test="gender != null">
+		 		and substr(jumin_no,8,1) in
+		 		<foreach item="gender"
+		 				 collection="gender"
+		 				 open="("
+		 				 close=")"
+		 				 separator=",">
+		 				 #{gender}
+		 		</foreach>
+		 	</if>
+            <if test="religionCode !=''">
+				and religion_code =#{religionCode}
+			</if>
+			<if test="schoolCode !=null">
+				and school_code in
+				<foreach item="school"
+						 collection="schoolCode"
+						 open="("
+						 close=")"
+						 separator=",">
+						 #{school}
+				</foreach>
+			</if> 
+		
+			<if test="skillCode != null">
+				and staff_no 
+				 in (select staff_no
+				 	   from staff_skill
+				 	  where skill_code in 
+				<foreach item="skill"
+						 collection="skillCode"
+						 open="("
+						 close=")"
+						 separator=",">
+						 #{skill}
+				</foreach>
+				)
+			</if>
+			
+			<if test="startDay != '--' and endDay !='--'">
+				<![CDATA[
+				and STR_TO_DATE(graduate_day,'%Y-%m-%d') >= STR_TO_DATE(#{startDay},'%Y-%m-%d')
+				and STR_TO_DATE(graduate_day,'%Y-%m-%d') <= STR_TO_DATE(#{endDay},'%Y-%m-%d')
+				]]>
+			</if>
+			
+		 </where>
+	     order by staff_no asc
+	     limit #{begin}, 5	 
+	</select>
+	
+	<select id="selectStaffCount" parameterType="SearchStaff" resultType="int">
+			select count(*)
+		  from staff
+		 <where>
+		 	<if test="staffName != ''">
+			 	and staff_name like CONCAT ('%', #{staffName}, '%') 	
+		 	</if>
+		 	<if test="gender != null">
+		 		and substr(jumin_no,8,1) in
+		 		<foreach item="gender"
+		 				 collection="gender"
+		 				 open="("
+		 				 close=")"
+		 				 separator=",">
+		 				 #{gender}
+		 		</foreach>
+		 	</if>
+            <if test="religionCode !=''">
+				and religion_code =#{religionCode}
+			</if>
+			<if test="schoolCode !=null">
+				and school_code in
+				<foreach item="school"
+						 collection="schoolCode"
+						 open="("
+						 close=")"
+						 separator=",">
+						 #{school}
+				</foreach>
+			</if> 
+		
+			<if test="skillCode !=null">
+				and staff_no 
+				 in (select staff_no
+				 	   from staff_skill
+				 	  where skill_code in 
+				<foreach item="skill"
+						 collection="skillCode"
+						 open="("
+						 close=")"
+						 separator=",">
+						 #{skill}
+				</foreach>
+				)
+			</if>
+			
+			<if test="startDay != '--' and endDay !='--'">
+				<![CDATA[
+				and STR_TO_DATE(graduate_day,'%Y-%m-%d') >= STR_TO_DATE(#{startDay},'%Y-%m-%d')
+				and STR_TO_DATE(graduate_day,'%Y-%m-%d') <= STR_TO_DATE(#{endDay},'%Y-%m-%d')
+				]]>
+			</if>	
+		 </where>
+	    
+	</select>	
+	
+	
+	<!-- 등록하기. -->
+	<insert id="insertStaff" parameterType="RegisterStaff" useGeneratedKeys="true" keyProperty="staffNo">
+		insert into staff(
+							staff_name,
+							jumin_no,
+							school_code,
+							religion_code,
+							graduate_day	
+											) values (
+														#{staffName},
+														#{juminNo},
+														#{schoolCode},
+														#{religionCode},
+														#{graduateDay}
+																		)
+	</insert>
+	
+	<!-- skill code 등록하기. -->
+	<insert id="insertStaffSkill" parameterType="StaffSkill">
+		insert into staff_skill(
+								staff_no,
+								skill_code
+											) values (
+													  	#{staffNo},
+													  	#{skillCode}
+													  				)
+	</insert>
+	
+	<select id="selectStaffByStaffNo" parameterType="int" resultMap="staffMap">
+		select *
+		  from staff
+		 where staff_no = #{staffNo}
+	</select>
+	<!-- Mybatis String[] 리턴 시 resultType에 배열의 타입을 정하고, 해당 mapper에서 return type을 배열로해주면된다.. -->
+	<select id="selectStaffSkillByStaffNo" parameterType="int" resultType="String">
+		select skill_code
+		  from staff_skill
+		 where staff_no = #{staffNo}
+	</select>
+	
+	<!-- update -->
+	<update id="updateStaffInfo" parameterType="RegisterStaff">
+		update staff
+		   set staff_name=#{staffName}, 
+		   	   jumin_no=#{juminNo}, 
+		   	   religion_code=#{religionCode},
+		   	   school_code=#{schoolCode},
+		   	   graduate_day=#{graduateDay}
+		 where staff_no=#{staffNo}
+	</update>
+	
+	<delete id="deleteStaffSkillByStaffNo" parameterType="int">
+		delete from staff_skill
+		where staff_no = #{staffNo} 
+	</delete>
+	
+	<!-- staff 삭제  -->
+	<delete id="deleteStaff" parameterType="int">
+		delete from staff
+		where staff_no=#{staffNo}
+	</delete>
+</mapper>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

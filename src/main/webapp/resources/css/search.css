@@ -1,0 +1,76 @@
+@charset "UTF-8";
+*{
+        margin:0;
+        padding:0;
+    }
+    #searchTable{
+        text-align:center;
+        width:98%;
+        margin:10px;
+        padding:10px;
+        height:250px;
+        border: 1px solid black;
+        border-collapse: collapse;
+    }
+    #resultTable{
+      text-align:center;
+      width:98%;
+      margin:10px;
+      padding:10px;
+      border: 1px solid black;
+      border-collapse: collapse;
+    }
+    th,tr,td{
+        border:1px solid black;
+    }
+    th{
+      background: grey;
+    }
+    #resultTable > tbody > tr > td {
+    	height:50px;
+    }
+    
+
+  .right,.left{
+      display:inline;
+      width:49%;
+      height:50px;
+      float:left;
+      text-align:center;
+    }
+  .left > input[type='button'] {
+      width:200px;
+      height:50px;
+    }
+  .right > input[type='button']{
+    width:100px;
+    height:50px;
+  }
+  .resultTable{
+    padding-top:50px;
+  }
+  .count{
+    margin-top:80px;
+  }
+  .count-section > div {
+    margin-left:70%;
+  }
+  .pagination{
+  	text-align:center;
+  	margin: auto;
+  	width:200px;
+  }
+  nav{
+  	display: inline-block;
+    }
+   ul {
+   	list-style : none;
+   }
+   li {
+   	float: left;
+   }
+   
+   .upNdelBtn{
+   width:110px;
+   height:40px;
+   }
